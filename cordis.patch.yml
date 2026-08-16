@@ -1,0 +1,7 @@
+# dsh-neiwangchuantou bundle patch: 注入 polyfill 插件行。
+# 该行引用本包的 index.js（apply 插件），通过 webServer.tapIndex 注入
+# crypto.randomUUID polyfill。
+
+- insert:
+    - id: dsh-neiwangchuantou
+      name: dsh-neiwangchuantou

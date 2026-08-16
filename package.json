@@ -1,0 +1,26 @@
+{
+  "name": "dsh-neiwangchuantou",
+  "version": "0.1.0",
+  "description": "dsh web 内网穿透辅助插件：注入 crypto.randomUUID polyfill 并放行 0.0.0.0/私网/隧道域名的 privileged API",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": {
+      "default": "./index.js"
+    },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "tunnel-proxy.mjs",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "license": "MIT"
+}
