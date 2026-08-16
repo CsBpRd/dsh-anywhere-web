@@ -1,4 +1,4 @@
-// dsh-neiwangchuantou — 服务器端插件
+// dsh-anywhere-web — 服务器端插件
 // 1) crypto.randomUUID polyfill 注入（webServer.tapIndex，解决非安全上下文
 //    下前端崩溃）
 // 2) Host/Origin loopback 改写（prependListener，在 browser-trust fence 检查
@@ -6,7 +6,7 @@
 //    settings.describe 等 privileged 方法在 0.0.0.0 / 隧道访问时也放行。
 // 纯服务器端、不改 dsh 内部文件，更新免疫。
 
-export const name = "dsh-neiwangchuantou";
+export const name = "dsh-anywhere-web";
 export const inject = ["webServer"];
 
 const POLYFILL = `<script>
@@ -80,7 +80,7 @@ export function apply(ctx) {
     const onUpgrade = (req) => rewriteHeaders(req);
     server.prependListener("request", onRequest);
     server.prependListener("upgrade", onUpgrade);
-    ctx.logger.info("[dsh-neiwangchuantou] host rewrite + polyfill loaded");
+    ctx.logger.info("[dsh-anywhere-web] host rewrite + polyfill loaded");
     return () => {
       server.off("request", onRequest);
       server.off("upgrade", onUpgrade);

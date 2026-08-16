@@ -1,7 +1,7 @@
-# dsh-neiwangchuantou bundle patch: 注入 polyfill 插件行。
+# dsh-anywhere-web bundle patch: 注入插件行。
 # 该行引用本包的 index.js（apply 插件），通过 webServer.tapIndex 注入
-# crypto.randomUUID polyfill。
+# crypto.randomUUID polyfill，并在 fence 前改写白名单入口的 Host/Origin。
 
 - insert:
-    - id: dsh-neiwangchuantou
-      name: dsh-neiwangchuantou
+    - id: dsh-anywhere-web
+      name: dsh-anywhere-web

@@ -1,5 +1,5 @@
-// dsh-neiwangchuantou 隧道反代：纯透传 127.0.0.1:3090 → 127.0.0.1:3080。
-// Host/Origin 改写已由插件 dsh-neiwangchuantou 在 dsh 内部完成（白名单），
+// dsh-anywhere-web 隧道反代：纯透传 127.0.0.1:3090 → 127.0.0.1:3080。
+// Host/Origin 改写已由插件 dsh-anywhere-web 在 dsh 内部完成（白名单），
 // 本反代只做 HTTP + WebSocket 透传，不改任何头。
 import http from "node:http";
 
@@ -52,5 +52,5 @@ server.on("upgrade", (req, socket, head) => {
 });
 
 server.listen(PORT, BIND_HOST, () =>
-  console.log(`dsh-neiwangchuantou tunnel-proxy: ${BIND_HOST}:${PORT} -> ${UPSTREAM_HOST}:${UPSTREAM_PORT}`)
+  console.log(`dsh-anywhere-web tunnel-proxy: ${BIND_HOST}:${PORT} -> ${UPSTREAM_HOST}:${UPSTREAM_PORT}`)
 );

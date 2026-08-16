@@ -1,4 +1,4 @@
-# dsh-neiwangchuantou
+# dsh-anywhere-web
 
 DeepSeek Harness (dsh) web 的**内网穿透辅助插件**（dsh bundle）。
 
@@ -19,10 +19,10 @@ DeepSeek Harness (dsh) web 的**内网穿透辅助插件**（dsh bundle）。
 ```sh
 # 方式一：直接引用 GitHub（首次 add 若 pnpm 要求构建授权，按提示在
 # pnpm-workspace.yaml 的 allowBuilds 放行本包）
-dsh plugin --profile web add github:CsBpRd/dsh-neiwangchuantou
+dsh plugin --profile web add github:CsBpRd/dsh-anywhere-web
 
 # 方式二：本地 checkout
-dsh plugin --profile web add /path/to/dsh-neiwangchuantou
+dsh plugin --profile web add /path/to/dsh-anywhere-web
 ```
 
 装好后重启 dsh web：
@@ -50,13 +50,13 @@ node tunnel-proxy.mjs   # 环境变量 LISTEN_PORT / BIND_HOST / UPSTREAM_PORT
 ## 卸载
 
 ```sh
-dsh plugin --profile web remove dsh-neiwangchuantou
+dsh plugin --profile web remove dsh-anywhere-web
 ```
 
 ## 结构
 
 ```
-dsh-neiwangchuantou/
+dsh-anywhere-web/
 ├── package.json       # dsh.bundle manifest
 ├── cordis.patch.yml   # 注入插件行的 patch 层
 ├── index.js           # apply 插件：tapIndex polyfill + host 白名单改写
