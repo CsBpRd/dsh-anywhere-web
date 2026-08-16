@@ -36,7 +36,7 @@ function toLoopback(authority) {
 
 const LOOPBACK_RE = /^(?:127\.|localhost|\[::1\]|0x7f)/i;
 
-// 仅改写这些"内网穿透入口"的 Host，其余（如恶意/重绑定域名）原样交给
+// 仅改写这些"非 loopback 访问入口"的 Host，其余（如恶意/重绑定域名）原样交给
 // fence 拒绝，保留 DNS rebinding 防护。匹配 0.0.0.0、私网段、隧道域名。
 const REWRITE_HOST_RE = /^(?:0\.0\.0\.0|dsh\.csbprd\.top|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})$/i;
 

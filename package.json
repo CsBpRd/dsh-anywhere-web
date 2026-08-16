@@ -14,6 +14,7 @@
   "files": [
     "index.js",
     "cordis.patch.yml",
+    "install.sh",
     "tunnel-proxy.mjs",
     "README.md"
   ],
