@@ -30,6 +30,38 @@ fi
 
 say "plugin installed into bundles"
 
+# Optional LAN direct access: DSH_LAN=1 binds the webserver to 0.0.0.0 so
+# LAN devices can reach the Web UI directly (http://<lan-ip>:3080). The
+# override lives in the profile's own patch layer (user layer, wins over
+# bundles), restating both keys the webserver row needs. Idempotent.
+if [ "${DSH_LAN:-}" = "1" ]; then
+  PROFILE_PATCH="$PROFILE_DIR/cordis.patch.yml"
+  if ! grep -q "host: '0.0.0.0'" "$PROFILE_PATCH" 2>/dev/null; then
+    if [ "$(cat "$PROFILE_PATCH")" = "[]" ]; then
+      cat > "$PROFILE_PATCH" <<EOF
+# User patch layer. Added by dsh-anywhere-web (DSH_LAN=1): bind to all
+# interfaces so LAN devices can access the Web UI directly.
+- id: webserver
+  config:
+    host: '0.0.0.0'
+    port: !!js ctx.webStartup.port ?? 3080
+EOF
+    else
+      cat >> "$PROFILE_PATCH" <<EOF
+- id: webserver
+  config:
+    host: '0.0.0.0'
+    port: !!js ctx.webStartup.port ?? 3080
+EOF
+    fi
+    say "LAN direct access enabled (webserver bound to 0.0.0.0) — LAN devices can reach http://<this-machine-ip>:3080"
+  else
+    say "LAN override already present — skipping"
+  fi
+else
+  say "LAN direct access not enabled (set DSH_LAN=1 to bind 0.0.0.0)"
+fi
+
 # Restart a running dsh web server so the plugin loads.
 if [ "${DSH_NO_RESTART:-}" = "1" ]; then
   say "restart skipped (DSH_NO_RESTART=1) — restart dsh web manually to load it"

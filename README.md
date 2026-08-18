@@ -22,7 +22,7 @@ DeepSeek Harness (dsh) web 的**任意入口访问增强插件**（dsh bundle）
 curl -fsSL https://raw.githubusercontent.com/CsBpRd/dsh-anywhere-web/main/install.sh | bash
 ```
 
-脚本自动：`dsh plugin add` 装进 profile 的 bundle 层栈（首次使用自动初始化 profile）→ 检测到运行中的 dsh web（LaunchAgent 或手动启动均可）则自动重启加载。可调环境变量：`DSH_PROFILE`（默认 web）、`DSH_HOME`、`DSH_NO_RESTART=1`（跳过重启）。
+脚本自动：`dsh plugin add` 装进 profile 的 bundle 层栈（首次使用自动初始化 profile）→ 检测到运行中的 dsh web（LaunchAgent 或手动启动均可）则自动重启加载。可调环境变量：`DSH_PROFILE`（默认 web）、`DSH_HOME`、`DSH_LAN=1`（启用局域网直连，见下文）、`DSH_NO_RESTART=1`（跳过重启）。
 
 **手动安装：**
 
@@ -56,6 +56,22 @@ curl -sS -o /dev/null -w "%{http_code}\n" \
 ```sh
 node tunnel-proxy.mjs   # 环境变量 LISTEN_PORT / BIND_HOST / UPSTREAM_PORT
 ```
+
+## 局域网直连（可选，DSH_LAN=1）
+
+默认 dsh 仍只绑 `127.0.0.1`（监听面不开放）。想让**局域网内其他设备**直接访问 `http://<本机IP>:3080`，用一行安装带 `DSH_LAN=1`：
+
+```sh
+DSH_LAN=1 curl -fsSL https://raw.githubusercontent.com/CsBpRd/dsh-anywhere-web/main/install.sh | bash
+```
+
+它会把 webserver 的 bind host 覆盖为 `0.0.0.0`（写进 profile 用户层 `cordis.patch.yml`，幂等）。此时：
+
+- 局域网设备 `http://192.168.x.x:3080` 直达，页面正常（polyfill 注入）；
+- 本插件的白名单改写已覆盖私网段 → 局域网设备上**设置页同样可用**（这是同类插件 `dsh-web-lan-access` 做不到的）；
+- 关闭：从 `~/.dsh/profiles/web/cordis.patch.yml` 删掉 `webserver` override 行，重启 dsh。
+
+> ⚠️ 安全：绑 `0.0.0.0` = 局域网内任何设备都能操作 dsh（相当于远程代码执行权限）。只建议可信网络使用；公网入口请继续走 Cloudflare Access + 隧道（本插件白名单也覆盖 `dsh.csbprd.top`）。
 
 ## 卸载
 

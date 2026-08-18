@@ -1,6 +1,10 @@
 # dsh-anywhere-web bundle patch: 注入插件行。
 # 该行引用本包的 index.js（apply 插件），通过 webServer.tapIndex 注入
 # crypto.randomUUID polyfill，并在 fence 前改写白名单入口的 Host/Origin。
+#
+# 可选：局域网直连（bind 0.0.0.0）不在本层做——用 install.sh 的 DSH_LAN=1
+# 写入 profile 用户层 cordis.patch.yml（webserver 行覆盖），保持默认监听面
+# 收敛在 127.0.0.1。
 
 - insert:
     - id: dsh-anywhere-web
