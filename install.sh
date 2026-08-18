@@ -30,6 +30,15 @@ fi
 
 say "plugin installed into bundles"
 
+# Extra hostnames for the rewrite whitelist: set DSH_EXTRA_HOSTS (comma-
+# separated) when dsh web is served under a domain via a tunnel/proxy, e.g.
+#   DSH_EXTRA_HOSTS=myapp.example.com
+# The plugin reads it from the environment (launchd / shell), so the domain
+# never needs to live in this repository.
+if [ -n "${DSH_EXTRA_HOSTS:-}" ]; then
+  say "DSH_EXTRA_HOSTS=${DSH_EXTRA_HOSTS} — ensure it is exported in the dsh web process environment"
+fi
+
 # Optional LAN direct access: DSH_LAN=1 binds the webserver to 0.0.0.0 so
 # LAN devices can reach the Web UI directly (http://<lan-ip>:3080). The
 # override lives in the profile's own patch layer (user layer, wins over

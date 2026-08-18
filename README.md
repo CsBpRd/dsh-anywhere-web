@@ -12,7 +12,7 @@ DeepSeek Harness (dsh) web 的**任意入口访问增强插件**（dsh bundle）
 纯**服务器端插件**，通过两个官方机制，不修改 dsh 任何内部文件（`dist` / `node_modules` / 源码），**dsh 升级后依旧生效**：
 
 1. **`webServer.tapIndex()`** —— 每次 `index.html` 响应注入 `crypto.randomUUID` polyfill（UUID v4 手写实现）。
-2. **`server.prependListener("request"/"upgrade")`** —— 在 browser-trust fence 检查**之前**，把白名单内（`0.0.0.0`、私网段 `10/8`、`172.16/12`、`192.168/16`、`dsh.csbprd.top`）的 Host/Origin 改写成 `127.0.0.1[:端口]`，fence 判定为 loopback → privileged 方法全放行。白名单外的恶意/重绑定域名**不改写**，照常被 fence 拒绝（保留 DNS rebinding 防护）。
+2. **`server.prependListener("request"/"upgrade")`** —— 在 browser-trust fence 检查**之前**，把白名单内（`0.0.0.0`、私网段 `10/8`、`172.16/12`、`192.168/16`，以及 `DSH_EXTRA_HOSTS` 环境变量注入的额外域名）的 Host/Origin 改写成 `127.0.0.1[:端口]`，fence 判定为 loopback → privileged 方法全放行。白名单外的恶意/重绑定域名**不改写**，照常被 fence 拒绝（保留 DNS rebinding 防护）。
 
 ## 安装
 
@@ -71,7 +71,7 @@ DSH_LAN=1 curl -fsSL https://raw.githubusercontent.com/CsBpRd/dsh-anywhere-web/m
 - 本插件的白名单改写已覆盖私网段 → 局域网设备上**设置页同样可用**（这是同类插件 `dsh-web-lan-access` 做不到的）；
 - 关闭：从 `~/.dsh/profiles/web/cordis.patch.yml` 删掉 `webserver` override 行，重启 dsh。
 
-> ⚠️ 安全：绑 `0.0.0.0` = 局域网内任何设备都能操作 dsh（相当于远程代码执行权限）。只建议可信网络使用；公网入口请继续走 Cloudflare Access + 隧道（本插件白名单也覆盖 `dsh.csbprd.top`）。
+> ⚠️ 安全：绑 `0.0.0.0` = 局域网内任何设备都能操作 dsh（相当于远程代码执行权限）。只建议可信网络使用；公网入口请继续走 Cloudflare Access + 隧道（额外域名通过 `DSH_EXTRA_HOSTS` 注入白名单）。
 
 ## 卸载
 

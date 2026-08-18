@@ -36,15 +36,24 @@ function toLoopback(authority) {
 
 const LOOPBACK_RE = /^(?:127\.|localhost|\[::1\]|0x7f)/i;
 
-// 仅改写这些"非 loopback 访问入口"的 Host，其余（如恶意/重绑定域名）原样交给
-// fence 拒绝，保留 DNS rebinding 防护。匹配 0.0.0.0、私网段、隧道域名。
-const REWRITE_HOST_RE = /^(?:0\.0\.0\.0|dsh\.csbprd\.top|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})$/i;
+// 基础白名单：0.0.0.0 与私网段（仓库内不内置私人域名，隐私）。
+const REWRITE_HOST_RE = /^(?:0\.0\.0\.0|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})$/i;
+
+// 额外域名白名单，经 DSH_EXTRA_HOSTS 环境变量注入（逗号分隔），
+// 例如 DSH_EXTRA_HOSTS=myapp.example.com —— 部署侧自行填写，不进仓库。
+const EXTRA_HOSTS = (process.env.DSH_EXTRA_HOSTS || "")
+  .split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+
+function isRewriteHost(hostname) {
+  if (REWRITE_HOST_RE.test(hostname)) return true;
+  return EXTRA_HOSTS.includes(hostname.toLowerCase());
+}
 
 function rewriteHeaders(req) {
   const host = req.headers.host;
   if (typeof host === "string" && host !== "" && !LOOPBACK_RE.test(host)) {
     const hostname = host.split(":")[0];
-    if (!REWRITE_HOST_RE.test(hostname)) return; // 不在白名单 → 不改写，fence 正常拒绝
+    if (!isRewriteHost(hostname)) return; // 不在白名单 → 不改写，fence 正常拒绝
     const rewritten = toLoopback(host);
     if (rewritten !== host) {
       req.headers.host = rewritten;
